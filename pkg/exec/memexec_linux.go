@@ -35,7 +35,7 @@ func newMemfd() (*os.File, error) {
 	if err != nil {
 		return nil, err
 	}
-	// flags=0: no MFD_CLOEXEC — fd must outlive the write and reach execveat
+	// flags=0: no MFD_CLOEXEC, fd must outlive the write and reach execveat
 	fd, _, errno := syscall.Syscall(sysMemfdCreate, uintptr(unsafe.Pointer(namePtr)), 0, 0)
 	runtime.KeepAlive(namePtr)
 	if errno != 0 {

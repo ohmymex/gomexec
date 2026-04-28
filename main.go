@@ -26,7 +26,7 @@ func main() {
 	urlEnv := os.Getenv("URL")
 
 	if keyHex != "" {
-		// AES-GCM needs full ciphertext before decryption — buffered path
+		// AES-GCM needs full ciphertext before decryption, buffered path
 		raw, err := readPayload(urlEnv, debug)
 		if err != nil {
 			fatal(debug, "read: %v", err)
@@ -41,7 +41,7 @@ func main() {
 		return
 	}
 
-	// No decryption — stream directly into memfd
+	// No decryption, stream directly into memfd
 	r, err := openReader(urlEnv, debug)
 	if err != nil {
 		fatal(debug, "open: %v", err)
