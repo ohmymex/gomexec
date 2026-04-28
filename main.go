@@ -58,11 +58,10 @@ func buildArgv(name string, args []string) []string {
 	argv := []string{name}
 	for i, arg := range args {
 		if arg == "--" {
-			argv = append(argv, args[i+1:]...)
-			break
+			return append(argv, args[i+1:]...)
 		}
 	}
-	return argv
+	return append(argv, args...)
 }
 
 func readPayload(url string, debug bool) ([]byte, error) {
