@@ -81,6 +81,10 @@ make build-all
 
 Outputs static binaries to `dist/` for: `linux/amd64`, `linux/arm64`, `linux/arm`, `linux/mips`, `linux/mipsle`.
 
+## Credits
+
+Inspired by [hackerschoice/memexec](https://github.com/hackerschoice/memexec).
+
 ## Supported architectures
 
 | Arch     | Binary                   |
