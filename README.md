@@ -37,7 +37,23 @@ exec {"/proc/$$/fd/$f"} "/usr/sbin/sshd" or die;
 ' 3< payload.elf
 ```
 
-The perl one-liner loads gomexec into a memfd via fd 3 (bash process substitution, no file created on disk), then redirects stdin to fd 3 before exec so gomexec receives the payload entirely in memory.
+The perl one-liner loads gomexec into a memfd via fd 3 (no file created on disk), then redirects stdin to fd 3 before exec so gomexec receives the payload entirely in memory.
+
+To pass args to the payload, add them after the spoofed argv0 in the perl exec line:
+
+```bash
+# uname -a
+exec {"/proc/$$/fd/$f"} "/usr/sbin/sshd", "-a" or die;
+' 3< /usr/bin/uname
+
+# id -u
+exec {"/proc/$$/fd/$f"} "/usr/sbin/sshd", "-u" or die;
+' 3< /usr/bin/id
+
+# ls -la /tmp
+exec {"/proc/$$/fd/$f"} "/usr/sbin/sshd", "-la", "/tmp" or die;
+' 3< /usr/bin/ls
+```
 
 ## Usage
 
